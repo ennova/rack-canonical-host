@@ -25,7 +25,7 @@ module Rack
 
       def canonical?
         return true unless enabled?
-        known? || ignored?
+        known? || ignored? || !get?
       end
 
       def response
@@ -59,6 +59,10 @@ module Rack
 
         conditions.include?(request_uri.host) ||
           any_match?(conditions, request_uri.host)
+      end
+
+      def get?
+        %w[GET HEAD].include? env.fetch('REQUEST_METHOD')
       end
 
       def ignored?
